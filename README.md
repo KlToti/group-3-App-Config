@@ -13,4 +13,4 @@ __K__ = Kibana
 
 Kibana is a data visualization and exploration tool for reviewing logs and events. Kibana offers easy-to-use, interactive charts, pre-built aggregations and filters, and geospatial support and making it the preferred choice for visualizing data stored in Elasticsearch.
 
-For more [reference, click here](https://aws.amazon.com/opensearch-service/the-elk-stack/)‚
+For more [reference, click here](https://aws.amazon.com/opensearch-service/the-elk-stack/)
