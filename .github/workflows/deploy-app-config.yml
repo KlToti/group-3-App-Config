@@ -1,0 +1,23 @@
+name: Deployment for VPC
+on: [push]
+jobs:
+  runs-on: ubuntu-lastest
+  steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_Access_key}}
+        aws-secret-access-key: ${{ secrets.AWS_Secret_Access_Key }}
+        aws-region: "eu-central-1"
+
+    - name: clone/checkout your repository
+      user: actions/checkout@v2
+
+    - name: Terrafom setup
+      user: hashicop/setup-terraform@v1
+
+    - name: Terrafom Init
+      run: terraform init
+
+    - name: Terrafom Plan
+      run: terraform plan
