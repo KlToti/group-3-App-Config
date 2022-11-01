@@ -22,3 +22,7 @@ jobs:
 
       - name: Terrafom Plan
         run: terraform plan
+
+      - name: Terrafom Apply
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply
