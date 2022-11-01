@@ -18,3 +18,29 @@ For more [reference, click here](https://aws.amazon.com/opensearch-service/the-e
 ![alt text](https://github.com/KlToti/group-3-Network/blob/main/pics/082918_1504_ELKStackTut2.webp)
 
 [Pic reference](https://www.guru99.com/elk-stack-tutorial.html)
+
+<!-- BEGIN_TF_DOCS -->
+## Requirements
+
+No requirements.
+
+## Providers
+
+No providers.
+
+## Modules
+
+No modules.
+
+## Resources
+
+No resources.
+
+## Inputs
+
+No inputs.
+
+## Outputs
+
+No outputs.
+<!-- END_TF_DOCS -->
