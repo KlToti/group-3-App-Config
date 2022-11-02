@@ -1,0 +1,31 @@
+name: Deployment for Application configuration
+on: [push]
+jobs:
+  terraform-deployment:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+      id-token: write
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::217741831553:role/github-actions-oidc
+          aws-region: "eu-central-1"
+
+      - name: clone/checkout your repository
+        uses: actions/checkout@v2
+
+      - name: Terrafom setup
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terrafom Init
+        run: terraform init
+
+      - name: Terrafom Plan
+        run: terraform plan
+
+      - name: Terrafom Apply
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve
