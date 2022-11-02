@@ -72,8 +72,6 @@ jobs:
           --output text)
           echo "::set-env name=ELASTICSERVER_IP::$ELASTICSERVER_IP"
     
-    
-  write-mode: append
       - name: run Ansible
         uses: saubermacherag/ansible-playbook-docker-action@v1.4
         with:
