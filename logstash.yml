@@ -1,0 +1,24 @@
+home:
+bin: {extract.path}/bin
+
+
+pipeline:
+  batch:
+    size: 125
+    delay: 50
+
+modules:
+  - name: MODULE_NAME1
+    var.PLUGIN_TYPE1.PLUGIN_NAME1.KEY1: VALUE
+    var.PLUGIN_TYPE1.PLUGIN_NAME1.KEY2: VALUE
+
+
+logs: {extract.path}/logs
+
+
+path.data
+
+
+
+
+node.name: 

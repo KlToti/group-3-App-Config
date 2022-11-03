@@ -1,0 +1,59 @@
+- hosts: logstash_server
+  become: yes
+  tasks:
+    - name: Update the apt-get of the ec2 instance
+      apt:
+        update_cache: yes
+    - name: Download APT repository
+      apt_repository:
+        repo: deb https://artifacts.elastic.co/packages/8.x/apt stable main
+        state: present
+    # Installing Logstash
+    - name: Update repositories cache and install Logstash
+      apt:
+        name: logstash
+        update_cache: yes
+        
+#--------------------------
+## LOGSTASH CONFIGURATION--
+#--------------------------
+# # Configure logstash.yml, if you have specific confg to be used.
+# - name: Configure logstash.yml File
+#   copy:
+#     src: /path/to/your/logstash.yml
+#     dest: /etc/logstash/logstash.yml
+# # Configure Logstash filter.conf config file
+# - name: Configure  Filter
+#   template:
+#     src=filter.conf.j2
+#     dest=/etc/logstash/conf.d/filter.conf
+#     owner=root
+#     group=root
+#     mode=0644
+# # Configure Beats or any (input source) for logstash pipeline
+# - name: Configure input source
+#   template:
+#     src=input.conf.j2
+#     dest=/etc/logstash/conf.d/input.conf
+#     owner=root
+#     group=root
+#     mode=0644
+# # Configure output source for logstash pipeline
+# - name: Configure output source
+#   template:
+#     src=output.conf.j2
+#     dest=/etc/logstash/conf.d/output.conf
+#     owner=root
+#     group=root
+#     mode=0644
+# # Enable Logstash service
+# - name: Enable Logstash service
+#   systemd:
+#     name: logstash
+#     enabled: yes
+# # Start Logstash service
+# - name: Start Logstash service
+#   systemd:
+#     name: logstash
+#     state: started
+#     daemon_reload: yes
