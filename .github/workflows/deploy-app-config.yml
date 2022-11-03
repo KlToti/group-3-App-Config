@@ -36,7 +36,7 @@ jobs:
       #   if: github.ref == 'refs/heads/main'
       #   run: terraform apply -auto-approve
 
-  ansible-playbook-docker-action:
+  ansible-deployment:
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -52,37 +52,35 @@ jobs:
       - name: Clone/Checkout your repository code
         uses: actions/checkout@v2
 
-      - name: Get private IP addresses for hosts.inventory
-        run: |
-          # Get server IP for logstash_server and set to LOGSTASH_IP
-          LOGSTACH_IP =$(aws ec2 describe-instances \
-          --filters \
-          "Name=instance-state-name,Values=running" \
-          "Name=tag:Name,Values=logstash_server" \
-          --query 'Reservations[*].Instances[*].[PrivateIpAddress]' \
-          --output text)
-          echo "::set-env name=LOGSTASH_IP::$LOGSTASH_IP"
+      # - name: Get private IP addresses for logstash server
+      #   run: |
+      #     # Get server IP for logstash_server and set to LOGSTASH_IP
+      #     LOGSTACH_IP =$(aws ec2 describe-instances \
+      #     --filters \
+      #     "Name=instance-state-name,Values=running" \
+      #     "Name=tag:Name,Values=logstash_server" \
+      #     --query 'Reservations[*].Instances[*].[PrivateIpAddress]' \
+      #     --output text)
+      #     echo "::set-env name=LOGSTASH_IP::$LOGSTASH_IP"
 
-          # Get server IP for logstash_server and set to LOGSTASH_IP
-          ELASTICSERVER_IP =$(aws ec2 describe-instances \
-          --filters \
-          "Name=instance-state-name,Values=running" \
-          "Name=tag:Name,Values=elasticSearch_server" \
-          --query 'Reservations[*].Instances[*].[PrivateIpAddress]' \
-          --output text)
-          echo "::set-env name=ELASTICSERVER_IP::$ELASTICSERVER_IP"
-    
-      - name: run Ansible
-        uses: saubermacherag/ansible-playbook-docker-action@v1.4
-        with:
-          playbookName: 'playbook.yml'
-          inventoryFile: 'inventory.yml'
-          requirementsFile: ".ansible/requirements.yml"
-          # galaxyGithubUser: ${{ secrets.GITHUB_USER }}
-          # galaxyGithubToken: ${{ secrets.Github_PAT }}
-          # rolesPath: ".ansible/playbooks/roles"
-          # keyFile: ".ansible/random-ssh-key.pem"
-          # keyFileVaultPass: ${{ secrets.KEYFILE_VAULT_PASS }}
-          # extraFile: ".ansible/extra.yml"
-          # extraVars: "-e my_first_extra=${{ github.actor }} -e my_second_one=${{ github.sha }}"
-          # verbosity: "vv"
+      # - name: Get private IP addresses for elasticsearch server
+      #   run: |
+      #     # Get server IP for elasticSearch_server and set to ELASTICSERVER_IP
+      #     ELASTICSERVER_IP =$(aws ec2 describe-instances \
+      #     --filters \
+      #     "Name=instance-state-name,Values=running" \
+      #     "Name=tag:Name,Values=elasticSearch_server" \
+      #     --query 'Reservations[*].Instances[*].[PrivateIpAddress]' \
+      #     --output text)
+      #     echo "::set-env name=ELASTICSERVER_IP::$ELASTICSERVER_IP"
+
+      - name: Install PIP
+        run: |
+          sudo apt update
+          sudo apt install python3-pip -y
+      
+      - name: Install Ansible
+        run: python3 -m pip install --user ansible
+      
+      - name: Run Ansible playbook
+        run: ansible-playbook playbook.yml    
