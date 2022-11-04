@@ -1,4 +1,3 @@
-name: Deployment for Application configuration
 on: [push]
 jobs:
   terraform-deployment:
