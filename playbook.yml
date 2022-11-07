@@ -1,5 +1,6 @@
 - name : Elasticsearch app configuration 
-- hosts : ElasticSearch_server
+  hosts : ElasticSearch_server
+  remote_user: root
   vars:
     ansible_connection: aws_ssm
     ansible_aws_ssm_bucket_name: elk-private
@@ -13,10 +14,20 @@
         - openssl
         - default-jdk
 
+    - name: Update the /etc/inventory.hosts file with node name
+      become: yes
+      lineinfile:
+        dest: "/etc/inventory.hosts"
+        regexp: '.*{{ item }}$'
+        line: "{{ hostvars[item].ansible_host }} {{item}}"
+        state: present
+      when: hostvars[item].ansible_host is defined
+      with_items: "{{groups['es-cluster']}}"
+
     #install ElasticSearch
     - name: Import the Elastic Key
       apt_key:
-        rl: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
         state: present
     - name: Adding Elastic APT repository
       apt_repository:
