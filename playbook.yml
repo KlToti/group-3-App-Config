@@ -1,28 +1,30 @@
 - name : Elasticsearch app configuration 
-  hosts : ElasticSearch_server
-  remote_user: root
-  vars:
-    ansible_connection: aws_ssm
-    ansible_aws_ssm_bucket_name: elk-private
-    ansible_aws_ssm_region: eu-central-1
+  hosts : elasticSearch_server
+  become : yes
+  # vars:
+  #   ansible_connection: aws_ssm
+  #   ansible_aws_ssm_bucket_name: elk-private
+  #   ansible_aws_ssm_region: eu-central-1
+  #   ansible_aws_ssm_instance_id : i-0f790f85b57e349da
+
+   #plugin: community.aws.aws_ssm
 
   tasks:
-    - name: Install Prerequisites 
-      apt: name= state=latest update_cache=yes
-      with_items:
-        - apt-transport-https
-        - openssl
-        - default-jdk
+    - name: Update repositories cache and install Java
+      apt:
+        name: default-jre
+        update_cache: yes
 
-    - name: Update the /etc/inventory.hosts file with node name
-      become: yes
-      lineinfile:
-        dest: "/etc/inventory.hosts"
-        regexp: '.*{{ item }}$'
-        line: "{{ hostvars[item].ansible_host }} {{item}}"
-        state: present
-      when: hostvars[item].ansible_host is defined
-      with_items: "{{groups['es-cluster']}}"
+    - name: Update repositories cache and install apt-transport-https
+      apt:
+        name: apt-transport-https
+        update_cache: yes
+    
+    - name: Update repositories cache and install Openssl
+      apt:
+        name: openssl
+        update_cache: yes
+
 
     #install ElasticSearch
     - name: Import the Elastic Key
@@ -33,7 +35,7 @@
       apt_repository:
         repo: deb https://artifacts.elastic.co/packages/8.x/apt stable main
         state: present
-        filename: elastic-7.x.list
+        filename: elastic-8.x.list
         update_cache: yes
     - name: install elasticsearch
       apt:
@@ -53,12 +55,8 @@
     #configure file
     - name: Configure elasticsearch.yml File
       copy:
-        src: '{{item.src}}'
+        src: ./elasticsearch.yml
         dest: /etc/elasticsearch/elasticsearch.yml
-        owner: root
-        group: elasticsearch
-      with_items:                                                                                                                                                 
-        - { src: '/etc/elasticsearch.yml'}
     
     #Change the ownership
     #- name: set elasticsearch permissions
@@ -81,3 +79,5 @@
       systemd:
         state=started
         name=elasticsearch
+
+
