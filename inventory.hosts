@@ -1,6 +1,6 @@
 # GROUP NAME FOR MY WEB SERVER
 [elasticSearch_server]
-i-0e796d82a25128424
+i-04dd891fa88b9a205
 
 [elasticSearch_server:vars]
 ansible_user=ubuntu

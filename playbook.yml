@@ -1,25 +1,22 @@
 - name : Elasticsearch app configuration 
   hosts : elasticSearch_server
   become : yes
-  # vars:
-  #   ansible_connection: aws_ssm
-  #   ansible_aws_ssm_bucket_name: elk-private
-  #   ansible_aws_ssm_region: eu-central-1
-  #   ansible_aws_ssm_instance_id : i-0f790f85b57e349da
 
-   #plugin: community.aws.aws_ssm
 
   tasks:
-    - name: Update repositories cache and install Java
-      apt:
-        name: default-jre
-        update_cache: yes
+    # - name: Update repositories cache and install Java
+    #   apt:
+    #     name: default-jre
+    #     update_cache: yes
 
+    #APT transport for downloading via the HTTP Secure protocol (HTTPS)
+    #allows the use of repositories accessed via the HTTP Secure protocol
     - name: Update repositories cache and install apt-transport-https
       apt:
         name: apt-transport-https
         update_cache: yes
     
+    #secure communications over computer networks
     - name: Update repositories cache and install Openssl
       apt:
         name: openssl
@@ -49,8 +46,8 @@
         name: elasticsearch
         enabled: yes
         masked: no
-    - name: ensure elasticsearch is running
-      systemd: state=started name=elasticsearch
+    #- name: ensure elasticsearch is running
+    #  systemd: state=started name=elasticsearch
 
     #configure file
     - name: Configure elasticsearch.yml File
@@ -70,14 +67,28 @@
     #
 
     #ElasticSearch start
-    - name: restart elasticsearch after change configuration by configure-elastic-file role
+    #- name: restart elasticsearch after change configuration by configure-elastic-file role
+    #  systemd:
+    #     state: restarted
+    #     daemon_reload: yes
+    #     name: elasticsearch
+    # - name: ensure elasticsearch is running
+    #   systemd:
+    #     state=started
+    #     name=elasticsearch
+
+    # Enable ElasticSearch service
+    - name: Enabling ElasticSearch service
       systemd:
-        state: restarted
-        daemon_reload: yes
         name: elasticsearch
-    - name: ensure elasticsearch is running
+        enabled: yes
+        daemon_reload: yes
+    # Start ElasticSearch service
+    - name: Starting ElasticSearch service
       systemd:
-        state=started
-        name=elasticsearch
+        name: elasticsearch
+        state: started
+    - name: Ensure ElasticSearch is running
+      systemd: state=started name=elasticsearch
 
 

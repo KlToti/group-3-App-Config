@@ -1,7 +1,7 @@
 plugin: aws_ec2
 regions:
    - eu-central-1
-hostnames:
-   - i-0f790f85b57e349da
+#hostnames:
+#   - i-0f790f85b57e349da
 filters:
    tag:SSMTag: elasticSearch_server
