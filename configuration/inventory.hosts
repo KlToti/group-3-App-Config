@@ -1,5 +1,5 @@
 [logstash_server]
-i-02f0ba615af51ecdb
+i-0a499fb1516b5066f
 
 [logstash_server:vars]
 ansible_user=ubuntu
