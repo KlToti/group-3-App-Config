@@ -1,7 +1,9 @@
 #example of how to use
 
 #sets environment variables?
-- name: Set elasticSearch_ip
+- hosts: _elasticSearch_server
+  name:
+  Set elasticSearch_ip
   ansible.builtin.set_fact:
     elasticsearch_ip: "{{ _elasticSearch_server.ansible_default_ipv4.address }}"
     ssh_key: "{{ secrets.GROUP3_EC2_SSH }}"
