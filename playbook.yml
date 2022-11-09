@@ -1,6 +1,11 @@
 - name : Elasticsearch app configuration 
-  hosts : elasticSearch_server
+  hosts : _elasticSearch_server
   become : yes
+
+  vars:
+    ansible_user: ubuntu
+    ansible_ssh_common_args: -o StrictHostKeyChecking=no -o ProxyCommand="sh -c \"aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'\""
+    ansible_ssh_private_key_file: {{ secrets.GROUP3_EC2_SSH }}
 
 
   tasks:
