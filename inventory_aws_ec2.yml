@@ -1,0 +1,13 @@
+plugin: aws_ec2
+regions:
+  - "eu-central-1"
+filters:
+  instance-state-name: running
+  tag:Name:
+    - logstash_server
+    - elasticSearch_server
+keyed_groups:
+  - key: tags.Name
+compose:
+  ansible_host: instance_id
+    
