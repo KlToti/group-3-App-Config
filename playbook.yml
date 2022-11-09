@@ -5,7 +5,7 @@
   name: Set elasticSearch_ip
   tasks:
     - ansible.builtin.set_fact:
-        elasticsearch_ip: "{{ _elasticSearch_server.ansible_default_ipv4.address }}"
+        # elasticsearch_ip: "{{ _elasticSearch_server.ansible_default_ipv4.address }}"
         ssh_key: "{{ secrets.GROUP3_EC2_SSH }}"
 
 - hosts: _logstash_server
