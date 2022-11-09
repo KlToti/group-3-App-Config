@@ -2,7 +2,7 @@ name: Deployment for Application configuration
 on: 
   pull_request:
     branches:
-      - main
+      - GH_Actions_Ansible
   push:
     branches:
       - main
