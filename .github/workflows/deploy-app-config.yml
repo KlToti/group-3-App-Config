@@ -2,10 +2,10 @@ name: Deployment for Application configuration
 on: 
   pull_request:
     branches:
-      - GH_Actions_Ansible
+      - main
   push:
     branches:
-      - main
+      - GH_Actions_Ansible
 jobs:
   ansible-deployment:
     runs-on: ubuntu-latest
