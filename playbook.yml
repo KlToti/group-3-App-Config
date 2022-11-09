@@ -1,7 +1,8 @@
 #example of how to use
 # trial commit
 #sets environment variables?
-- name: Set elasticSearch_ip
+- hosts: _logstash_server
+  name: Set elasticSearch_ip
   tasks:
     - ansible.builtin.set_fact:
         elasticsearch_ip: "{{ _elasticSearch_server.ansible_default_ipv4.address }}"
