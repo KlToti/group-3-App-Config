@@ -1,5 +1,5 @@
-# Please do not modify this file manually
-http.host: 0.0.0.0
+path.data: /var/lib/logstash
+path.logs: /var/log/logstash
 
 
 
