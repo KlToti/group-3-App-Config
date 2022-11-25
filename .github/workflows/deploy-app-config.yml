@@ -1,30 +1,43 @@
-on: [push]
+name: Deployment for Application configuration
+on: 
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - Configure_ElasticSearch_application
 jobs:
-  terraform-deployment:
+  ansible-deployment:
     runs-on: ubuntu-latest
     permissions:
       packages: write
       contents: read
       id-token: write
     steps:
+      - name: Install SSM plugin
+        run: |
+          curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+          sudo dpkg -i session-manager-plugin.deb
+          session-manager-plugin
+      - name: Clone/Checkout your repository code
+        uses: actions/checkout@v2
+
+      - name: Install PIP
+        run: |
+          sudo apt update
+          sudo apt install python3-pip -y
+      
+      - name: Install Ansible
+        run: python3 -m pip install --user ansible
+      
+      - name: Install boto3 for EC2 plugin
+        run: python3 -m pip install --user boto3
+        
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: arn:aws:iam::217741831553:role/github-actions-oidc
           aws-region: "eu-central-1"
-
-      - name: clone/checkout your repository
-        uses: actions/checkout@v2
-
-      - name: Terrafom setup
-        uses: hashicorp/setup-terraform@v1
-
-      - name: Terrafom Init
-        run: terraform init
-
-      - name: Terrafom Plan
-        run: terraform plan
-
-      - name: Terrafom Apply
-        if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve
+      
+      - name: Run Ansible playbook
+        run: ansible-playbook playbook.yml

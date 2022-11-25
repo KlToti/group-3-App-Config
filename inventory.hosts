@@ -1,0 +1,10 @@
+# GROUP NAME FOR MY WEB SERVER
+[elasticSearch_server]
+i-04dd891fa88b9a205
+
+[elasticSearch_server:vars]
+ansible_user=ubuntu
+#Ansible uses SSH which allows users and ansbile too; to log in to remote servers and perform management tasks. 
+ansible_ssh_common_args=-o StrictHostKeyChecking=no -o ProxyCommand="sh -c \"aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'\""
+
+ansible_ssh_private_key_file=~/.ssh/group3-exc 

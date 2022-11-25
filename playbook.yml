@@ -1,0 +1,99 @@
+- name : Elasticsearch app configuration 
+  hosts : _elasticSearch_server
+  become : yes
+
+  vars:
+    ansible_user: ubuntu
+    ansible_ssh_common_args: -o StrictHostKeyChecking=no -o ProxyCommand="sh -c \"aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'\""
+    ansible_ssh_private_key_file: "{{ secrets.GROUP3_EC2_SSH }}"
+
+
+  tasks:
+    # - name: Update repositories cache and install Java
+    #   apt:
+    #     name: default-jre
+    #     update_cache: yes
+
+    #APT transport for downloading via the HTTP Secure protocol (HTTPS)
+    #allows the use of repositories accessed via the HTTP Secure protocol
+    - name: Update repositories cache and install apt-transport-https
+      apt:
+        name: apt-transport-https
+        update_cache: yes
+    
+    #secure communications over computer networks
+    - name: Update repositories cache and install Openssl
+      apt:
+        name: openssl
+        update_cache: yes
+
+
+    #install ElasticSearch
+    - name: Import the Elastic Key
+      apt_key:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        state: present
+    - name: Adding Elastic APT repository
+      apt_repository:
+        repo: deb https://artifacts.elastic.co/packages/8.x/apt stable main
+        state: present
+        filename: elastic-8.x.list
+        update_cache: yes
+    - name: install elasticsearch
+      apt:
+        name: elasticsearch
+        state: present
+        update_cache: yes
+    - name: reload systemd config
+      systemd: daemon_reload=yes
+    - name: enable service elasticsearch and ensure it is not masked
+      systemd:
+        name: elasticsearch
+        enabled: yes
+        masked: no
+    #- name: ensure elasticsearch is running
+    #  systemd: state=started name=elasticsearch
+
+    #configure file
+    - name: Configure elasticsearch.yml File
+      copy:
+        src: ./elasticsearch.yml
+        dest: /etc/elasticsearch/elasticsearch.yml
+    
+    #Change the ownership
+    #- name: set elasticsearch permissions
+    #  file:
+    #    path: /usr/share/elasticsearch
+    #    state: directory
+    #    recurse: yes
+    #   owner: elasticsearch
+    #    group: elasticsearch
+
+    #
+
+    #ElasticSearch start
+    #- name: restart elasticsearch after change configuration by configure-elastic-file role
+    #  systemd:
+    #     state: restarted
+    #     daemon_reload: yes
+    #     name: elasticsearch
+    # - name: ensure elasticsearch is running
+    #   systemd:
+    #     state=started
+    #     name=elasticsearch
+
+    # Enable ElasticSearch service
+    - name: Enabling ElasticSearch service
+      systemd:
+        name: elasticsearch
+        enabled: yes
+        daemon_reload: yes
+    # Start ElasticSearch service
+    - name: Starting ElasticSearch service
+      systemd:
+        name: elasticsearch
+        state: started
+    - name: Ensure ElasticSearch is running
+      systemd: state=started name=elasticsearch
+
+

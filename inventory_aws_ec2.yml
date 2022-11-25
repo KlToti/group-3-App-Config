@@ -1,0 +1,21 @@
+#plugin: aws_ec2
+#regions:
+#   - eu-central-1
+#hostnames:
+#   - i-0f790f85b57e349da
+#filters:
+#   tag:SSMTag: elasticSearch_server
+
+plugin: aws_ec2
+regions:
+  - "eu-central-1"
+filters:
+  instance-state-name: running
+  tag:Name:
+    - logstash_server
+    - elasticSearch_server
+keyed_groups:
+  - key: tags.Name
+compose:
+  ansible_host: instance_id
+    
